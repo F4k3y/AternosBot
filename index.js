@@ -12,18 +12,19 @@ app.get('/', (req, res) => {
   res.send('Bot has arrived');
 });
 
-app.listen(8000, () => {
-  console.log('Server started');
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
 });
 
 function createBot() {
    const bot = mineflayer.createBot({
-      username: config['bot-account']['username'],
-      password: config['bot-account']['password'],
-      auth: config['bot-account']['type'],
-      host: config.server.ip,
-      port: config.server.port,
-      version: config.server.version,
+      username: process.env.BOT_USERNAME || config['bot-account']['username'],
+      password: process.env.BOT_PASSWORD || config['bot-account']['password'],
+      auth: process.env.BOT_AUTH_TYPE || config['bot-account']['type'],
+      host: process.env.SERVER_IP || config.server.ip,
+      port: process.env.SERVER_PORT || config.server.port,
+      version: process.env.SERVER_VERSION || config.server.version,
    });
 
    bot.loadPlugin(pathfinder);
