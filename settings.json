@@ -6,8 +6,8 @@
   },
 
   "server": {
-    "ip": "NXTDON.aternos.me", 
-    "port": 35692,   
+    "ip": "gaypazzo22.aternos.me", 
+    "port": 64222,   
     "version": "1.12.1"   
   },
   
@@ -32,12 +32,10 @@
     "chat-messages": {
       "enabled": true,
       "repeat": true,
-      "repeat-delay": 120,
+      "repeat-delay": 60,
 
       "messages": [
-        "Hello! Survivors",
-        "Subscibe To NXTDON :>!",
-        "I Like to Play Minecraft!"
+        "Ciao! Sono un bot. per disattivare i miei fastidiosi messaggi schiaccia il tasto P e poi clicca sul tasto col fumetto. <3"
       ]
     },
 
