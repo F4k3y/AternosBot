@@ -1,0 +1,10 @@
+# Dependencies
+/node_modules
+
+# Sensitive configuration files
+settings.json
+launcher_accounts.json
+
+# Replit-specific files
+.replit
+replit.nix
