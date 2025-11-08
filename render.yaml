@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: minecraft-afk-bot
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: BOT_USERNAME
+        value: ""
+      - key: BOT_PASSWORD
+        value: ""
+      - key: BOT_AUTH_TYPE
+        value: "mojang"
+      - key: SERVER_IP
+        value: ""
+      - key: SERVER_PORT
+        value: ""
+      - key: SERVER_VERSION
+        value: "1.12.1"
+      - key: AUTH_PASSWORD
+        value: ""
