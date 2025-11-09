@@ -17,6 +17,9 @@ app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
 
+let jumpInterval;
+let moveInterval;
+
 function createBot() {
    const bot = mineflayer.createBot({
       username: process.env.BOT_USERNAME || config['bot-account']['username'],
@@ -129,10 +132,17 @@ function createBot() {
       }
 
       if (config.utils['anti-afk'].enabled) {
-         bot.setControlState('jump', true);
-         if (config.utils['anti-afk'].sneak) {
-            bot.setControlState('sneak', true);
-         }
+         jumpInterval = setInterval(() => {
+            bot.setControlState('jump', true);
+            bot.setControlState('jump', false);
+         }, 3000);
+
+         moveInterval = setInterval(() => {
+            const x = bot.entity.position.x + (Math.random() * 6 - 3);
+            const y = bot.entity.position.y;
+            const z = bot.entity.position.z + (Math.random() * 6 - 3);
+            bot.pathfinder.setGoal(new GoalBlock(x, y, z));
+         }, 5000);
       }
    });
 
@@ -151,6 +161,8 @@ function createBot() {
 
    if (config.utils['auto-reconnect']) {
       bot.on('end', () => {
+         clearInterval(jumpInterval);
+         clearInterval(moveInterval);
          setTimeout(() => {
             createBot();
          }, config.utils['auto-recconect-delay']);
