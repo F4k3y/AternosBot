@@ -3,6 +3,10 @@ const Movements = require('mineflayer-pathfinder').Movements;
 const pathfinder = require('mineflayer-pathfinder').pathfinder;
 const { GoalBlock } = require('mineflayer-pathfinder').goals;
 
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
 const config = require('./settings.json');
 const express = require('express');
 
@@ -33,6 +37,8 @@ function createBot() {
    bot.loadPlugin(pathfinder);
    const mcData = require('minecraft-data')(bot.version);
    const defaultMove = new Movements(bot, mcData);
+   defaultMove.canDig = false;
+   defaultMove.canPlace = false;
    bot.settings.colorsEnabled = false;
 
    let pendingPromise = Promise.resolve();
