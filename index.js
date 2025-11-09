@@ -1,7 +1,7 @@
 const mineflayer = require('mineflayer');
 const Movements = require('mineflayer-pathfinder').Movements;
 const pathfinder = require('mineflayer-pathfinder').pathfinder;
-const { GoalBlock } = require('mineflayer-pathfinder').goals;
+const { GoalBlock, GoalNear } = require('mineflayer-pathfinder').goals;
 
 const config = require('./settings.json');
 const express = require('express');
@@ -18,6 +18,7 @@ app.listen(PORT, () => {
 });
 
 function createBot() {
+   let msg_timer, jump_timer, move_timer;
    const bot = mineflayer.createBot({
       username: process.env.BOT_USERNAME || config['bot-account']['username'],
       password: process.env.BOT_PASSWORD || config['bot-account']['password'],
@@ -129,9 +130,31 @@ function createBot() {
       }
 
       if (config.utils['anti-afk'].enabled) {
-         bot.setControlState('jump', true);
-         if (config.utils['anti-afk'].sneak) {
+         console.log('[INFO] Started anti-afk module');
+         const antiAfkConfig = config.utils['anti-afk'];
+
+         if (antiAfkConfig.sneak) {
             bot.setControlState('sneak', true);
+         }
+
+         if (antiAfkConfig.jump.enabled) {
+            const jumpInterval = antiAfkConfig.jump.interval * 1000;
+            jump_timer = setInterval(() => {
+               bot.setControlState('jump', true);
+               bot.setControlState('jump', false);
+            }, jumpInterval);
+         }
+
+         if (antiAfkConfig.move.enabled) {
+            const moveInterval = antiAfkConfig.move.interval * 1000;
+            const moveDistance = antiAfkConfig.move.distance;
+            move_timer = setInterval(() => {
+               const playerPos = bot.entity.position;
+               const randomX = (Math.random() - 0.5) * 2 * moveDistance + playerPos.x;
+               const randomZ = (Math.random() - 0.5) * 2 * moveDistance + playerPos.z;
+
+               bot.pathfinder.setGoal(new GoalNear(randomX, playerPos.y, randomZ, 1));
+            }, moveInterval);
          }
       }
    });
@@ -151,6 +174,10 @@ function createBot() {
 
    if (config.utils['auto-reconnect']) {
       bot.on('end', () => {
+         clearInterval(msg_timer);
+         clearInterval(jump_timer);
+         clearInterval(move_timer);
+
          setTimeout(() => {
             createBot();
          }, config.utils['auto-recconect-delay']);

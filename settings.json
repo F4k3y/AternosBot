@@ -26,7 +26,16 @@
 
     "anti-afk": {
       "enabled": true,
-      "sneak": true
+      "sneak": true,
+      "jump": {
+        "enabled": true,
+        "interval": 3
+      },
+      "move": {
+        "enabled": true,
+        "interval": 5,
+        "distance": 3
+      }
     },
 
     "chat-messages": {
