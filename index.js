@@ -136,17 +136,18 @@ function createBot() {
          // Imposta un intervallo per far saltare il bot periodicamente.
          // Questo assicura che il bot continui a saltare anche se un altro processo interrompe il salto.
          setInterval(() => {
-            console.log(`[Anti-AFK Debug] Y: ${bot.entity.position.y}, onGround: ${bot.entity.onGround}`);
-            // Controlla se il bot è a terra prima di saltare per evitare di rimanere bloccato a mezz'aria.
-            if (bot.entity.onGround) {
-               console.log('[Anti-AFK Debug] Jumping!');
+            const isBelowZero = bot.entity.position.y < 0;
+
+            // Se il bot è sotto Y=0, salta comunque per evitare di essere kickato.
+            // Se è sopra Y=0, salta solo se è a terra per un comportamento più naturale.
+            if (isBelowZero || bot.entity.onGround) {
                bot.setControlState('jump', true);
                // Rilascia il controllo del salto dopo un breve ritardo per eseguire un singolo salto.
                setTimeout(() => {
                   bot.setControlState('jump', false);
                }, 250);
             }
-         }, 1000); // Salta ogni secondo.
+         }, 1000); // Controlla ogni secondo.
       }
    });
 
