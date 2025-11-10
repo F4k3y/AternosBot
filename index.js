@@ -129,10 +129,22 @@ function createBot() {
       }
 
       if (config.utils['anti-afk'].enabled) {
-         bot.setControlState('jump', true);
          if (config.utils['anti-afk'].sneak) {
             bot.setControlState('sneak', true);
          }
+
+         // Imposta un intervallo per far saltare il bot periodicamente.
+         // Questo assicura che il bot continui a saltare anche se un altro processo interrompe il salto.
+         setInterval(() => {
+            // Controlla se il bot è a terra prima di saltare per evitare di rimanere bloccato a mezz'aria.
+            if (bot.entity.onGround) {
+               bot.setControlState('jump', true);
+               // Rilascia il controllo del salto dopo un breve ritardo per eseguire un singolo salto.
+               setTimeout(() => {
+                  bot.setControlState('jump', false);
+               }, 250);
+            }
+         }, 1000); // Salta ogni secondo.
       }
    });
 
