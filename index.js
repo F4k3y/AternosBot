@@ -159,9 +159,15 @@ function createBot() {
 
    bot.on('death', () => {
       console.log(
-         `\x1b[33m[AfkBot] Bot has died and was respawned at ${bot.entity.position}`,
+         `\x1b[33m[AfkBot] Bot has died. Waiting for respawn...`,
          '\x1b[0m'
       );
+      bot.once('spawn', () => {
+         console.log(`\x1b[33m[AfkBot] Bot has respawned at ${bot.entity.position}`, '\x1b[0m');
+         if (config.utils['anti-afk'].enabled && config.utils['anti-afk'].sneak) {
+            bot.setControlState('sneak', true);
+         }
+      });
    });
 
    if (config.utils['auto-reconnect']) {
